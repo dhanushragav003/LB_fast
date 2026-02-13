@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<body style="margin:0;padding:0;background-color:#f4f4f4;font-family:Segoe UI, Arial, sans-serif;">
+
+<table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f4;">
+  <tr>
+    <td align="center">
+
+      <!-- Main container -->
+      <table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background-color:#ffffff;margin:20px 0;border-collapse:collapse;">
+
+        <!-- Header -->
+        <tr>
+          <td style="background-color:#000;color:#F47A0D;padding:30px;text-align:center;">
+            <h1 style="margin:0;font-size:24px;">{{ email_subject }}</h1>
+          </td>
+        </tr>
+
+        <!-- Introduction -->
+        <tr>
+          <td style="padding:25px;border-bottom:1px solid #eee;color:#333;">
+            <h2 style="margin-top:0;">Introduction</h2>
+            <div style="line-height:1.6;white-space:pre-wrap;">{{ introduction }}</div>
+          </td>
+        </tr>
+
+        <!-- Core Concept -->
+        <tr>
+          <td style="padding:25px;background-color:#F47A0D;color:#ffffff;">
+            <h2 style="margin-top:0;">Core Concept</h2>
+            <div style="line-height:1.6;white-space:pre-wrap;">{{ core_concept }}</div>
+          </td>
+        </tr>
+
+        <!-- Detailed Explanation -->
+        <tr>
+          <td style="padding:25px;border-bottom:1px solid #eee;color:#333;">
+            <h2 style="margin-top:0;">Detailed Explanation</h2>
+            <div style="line-height:1.6;white-space:pre-wrap;">{{ detailed_explanation }}</div>
+          </td>
+        </tr>
+
+        {% if code_example and code_example|trim %}
+        <!-- Code Example -->
+        <tr>
+          <td style="padding:25px;border-bottom:1px solid #eee;">
+            <h2 style="margin-top:0;">Code Example</h2>
+            <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#1e1e1e;border-collapse:collapse;">
+              <tr>
+                <td style="padding:15px;font-family:Courier New, monospace;font-size:14px;color:#dcdcdc;white-space:pre;overflow-x:auto;">
+{{ code_example | e }}
+                </td>
+              </tr>
+            </table>
+
+            {% if code_explanation and code_explanation|trim %}
+                <tr>
+                  <td style="padding:25px;border-bottom:1px solid #eee;color:#333;">
+                    <h2 style="margin-top:0;">Pro Tip:</h2>
+                    <ul style="padding-left:20px;margin:0;">
+                      {% for item in code_explanation %}
+                      <li style="margin-bottom:8px;">{{ item }}</li>
+                      {% endfor %}
+                    </ul>
+                  </td>
+                </tr>
+            {% endif %}
+          </td>
+        </tr>
+        {% endif %}
+
+        <!-- Key Takeaways -->
+        <tr>
+          <td style="padding:25px;border-bottom:1px solid #eee;color:#333;">
+            <h2 style="margin-top:0;">Key Takeaways</h2>
+            <ul style="padding-left:20px;margin:0;">
+              {% for item in key_takeaways %}
+              <li style="margin-bottom:8px;">{{ item }}</li>
+              {% endfor %}
+            </ul>
+          </td>
+        </tr>
+
+        <!-- Summary -->
+        <tr>
+          <td style="padding:25px;color:#333;">
+            <h2 style="margin-top:0;">Summary</h2>
+            <div style="line-height:1.6;white-space:pre-wrap;">{{ summary }}</div>
+          </td>
+        </tr>
+
+        <!-- Buttons -->
+        <tr>
+          <td align="center" style="padding:30px;background-color:#f9f9f9;">
+            <a href="{{ completion_url }}" style="display:inline-block;padding:12px 25px;margin:5px;text-decoration:none;background-color:#000;color:#fff;font-weight:bold;border-radius:5px;">Mark Completed</a>
+            <a href="{{ play_url }}" style="display:inline-block;padding:12px 25px;margin:5px;text-decoration:none;background-color:#F47A0D;color:#fff;font-weight:bold;border-radius:5px;">Resume Learning</a>
+          </td>
+        </tr>
+
+        <!-- Footer -->
+        <tr>
+          <td align="center" style="padding:20px;font-size:13px;color:#666;">
+            Sent via <strong>Learn<span style="color:#F47A0D;">Bite</span></strong>
+          </td>
+        </tr>
+
+      </table>
+      <!-- End container -->
+
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
