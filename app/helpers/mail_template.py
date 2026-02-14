@@ -68,6 +68,11 @@ def get_completed_mail(title:str,completed_chapters:int,redirect_url:str)-> Tupl
     params={ "title":title,"completed_chapters":completed_chapters,"play_url":redirect_url}
     html_str= render_email("completed.html",params)
     return subject, html_str
+def get_custom_mail(title,params,template)-> Tuple[str, str]:
+    subject =f"{title} — Learning Progress Update 🎉"
+    params['title']=title
+    html_str= render_email(f"{template}.html",params)
+    return subject, html_str
 
 def validate_generated_email(generated_content) -> BiteEmail:
     try:

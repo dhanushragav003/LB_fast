@@ -1,6 +1,6 @@
 from fastapi import APIRouter , Depends , Request
 from app.services import   llm , qstash , email , youtube
-from app.helpers.mail_template import construct_mail , get_completed_mail
+from app.helpers.mail_template import construct_mail , get_completed_mail , get_custom_mail
 from starlette.responses import JSONResponse
 from app.dependency.database import get_db
 from app.dependency.auth import get_current_user
@@ -24,7 +24,6 @@ async def create_dailybite(request:DailyBiteRequest,current_user=Depends(get_cur
         if not (user_lp and user_lp.get('user_id',None) and user_lp.get('user_id',None)==current_user.id):
             return JSONResponse(status_code=403,content={"data":None,"msg": "Not authorized","success":False})
         job_id = user_lp.get('job_id',None) if user_lp.get('daily_bite_enabled',False) else None
-        print(f"{chapter = }")
         if not chapter.get('transcript',None):
             chapters=db.fetch_resource_chapters(db_session,chapter.get('learning_resource_id',None))
             transcript= youtube.get_chapter_transcript(chapters,chapter.get('learning_resource_id',None))
@@ -35,6 +34,16 @@ async def create_dailybite(request:DailyBiteRequest,current_user=Depends(get_cur
         job_id=scheduler.create_schedule({"payload":request.payload},request.destination,cron_exp,schedule_id=job_id)
         #update progress
         db.update_dailybite(db_session,progress.get('user_learning_progress_id',None),{"job_id":job_id,'daily_bite_enabled':True})
+        play_url=f"{request.payload.get('redirect_url')}/learn?video_id={chapter.get('learning_resource_id',None)}&start=0" if request.payload.get('redirect_url',None) else None
+        chapter_resource=db.fetch_learning_resource(db_session,chapter.get('learning_resource_id',None))
+        params={
+            "scheduled_time":request.time,
+            "frequency":request.frequency,
+            "play_url":play_url
+        }
+        subject,body=get_custom_mail(chapter_resource.get('title',''),params,'created')
+        subject = subject.replace('Update','scheduled')
+        email.send_email(request.payload.get('email',None),subject,html=body)
         return JSONResponse(status_code=200,content=jsonable_encoder({"data":{"job_id":job_id},"msg": "job scheduled","success":True}))
     
     except Exception as e:
@@ -67,7 +76,8 @@ async def send_bite(request:Dailybite,session=Depends(get_db)):#request: bytes =
             job_id=progress['job_id']
             print(f"{job_id = }")
             redirect_url=f"{request.payload.get('redirect_url')}/learn?video_id={next_chapter.get('learning_resource_id',None)}" if request.payload.get('redirect_url',None) else None
-            subject,body=get_completed_mail(resource.get('title',None),progress.get('completed_chapters'),redirect_url)
+            params={ "completed_chapters":progress.get('completed_chapters'),"play_url":redirect_url}
+            subject,body=get_custom_mail(resource.get('title',None),params,'completed')
         else:
             chapter_resource=db.fetch_learning_resource(db_session,next_chapter.get('learning_resource_id',None))
             resource_title=chapter_resource.get('title',None)
