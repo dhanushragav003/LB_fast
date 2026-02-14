@@ -23,6 +23,6 @@ app.include_router(users.route)
 app.include_router(dailybite.route)
 
 
-@app.get('/api/health/')
+@app.get('/')
 def health():
     return {"msg":"fast api is up","status":"OK"}
