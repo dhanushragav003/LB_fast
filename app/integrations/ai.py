@@ -1,11 +1,12 @@
 
-import google.generativeai as genai
+# import google.generativeai as genai
 from openai import OpenAI
 from app.core.config import app_config
 from enum import Enum
 
-genai.configure(api_key=app_config.GEMINI_API_KEY)
-model = genai.GenerativeModel(app_config.GEMINI_MODEL)
+
+# genai.configure(api_key=app_config.GEMINI_API_KEY)
+# model = genai.GenerativeModel(app_config.GEMINI_MODEL)
 
 
 

@@ -1,9 +1,7 @@
 from app.schemas.email import BiteEmail
 from pydantic import ValidationError
 from typing import Tuple
-import re
-import markdown
-from markupsafe import Markup, escape
+from markupsafe import Markup
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from pathlib import Path
 
