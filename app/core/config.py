@@ -30,6 +30,7 @@ class settings(BaseSettings):
     SMTP_HOST:str
     SMTP_PORT:str
     RESEND_API_KEY:str
+    ALLOWED_ORIGINS:list
     MAX_RETRY:int
     model_config=SettingsConfigDict(
         env_file='.env',

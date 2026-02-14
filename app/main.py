@@ -3,14 +3,15 @@ from app.routes import quiz , users , dailybite
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.templating import Jinja2Templates
 from jinja2_markdown import MarkdownExtension
-
+from app.core.config import app_config
 
 app = FastAPI()
 templates = Jinja2Templates(directory="app/templates")
 templates.env.add_extension(MarkdownExtension)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"], # Your frontend URL
+    allow_origins=app_config.ALLOWED_ORIGINS, # Your frontend URL
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
