@@ -23,6 +23,7 @@ def send_email(
             app_config.SMTP_HOST,
             app_config.SMTP_PORT,
         ) as smtp:
+            smtp.starttls()
             smtp.login(app_config.SMTP_USER, app_config.SMTP_PASSWORD)
             smtp.send_message(msg)
         return True
