@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 import os
 from pydantic_settings import BaseSettings , SettingsConfigDict
+from typing import List
 
 load_dotenv()   # loads .env into os.environ
 
@@ -30,7 +31,7 @@ class settings(BaseSettings):
     SMTP_HOST:str
     SMTP_PORT:str
     RESEND_API_KEY:str
-    ALLOWED_ORIGINS:list
+    ALLOWED_ORIGINS:List[str]= ["http://localhost:5173"]
     MAX_RETRY:int
     model_config=SettingsConfigDict(
         env_file='.env',
