@@ -104,7 +104,7 @@ class ollama():
             messages=[{"role":"system","content":system_content},{"role":"user","content":prompt}]
         )
         for event in stream_response:
-            # Each event can contain partial text in event.choices[0].delta
+    
             print(event)
             delta = event.choices[0].delta.content
             if delta:
