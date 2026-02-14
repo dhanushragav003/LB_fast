@@ -33,6 +33,7 @@ class settings(BaseSettings):
     RESEND_API_KEY:str
     ALLOWED_ORIGINS:List[str]= ["http://localhost:5173"]
     MAX_RETRY:int
+    SUPDATA_KEY:str
     model_config=SettingsConfigDict(
         env_file='.env',
         extra="allow"

@@ -126,7 +126,6 @@ async def fetch_chapter_summary(id: str, session=Depends(get_db)):
     try:
         db_session= db.db_session(session)
         chapters = db.fetch_resource_chapters(db_session, id)  # List[dict]
-        print(chapters) 
         if not chapters[0].get('transcript',None) :
             print("fetching transcript from youtube")
             chapter_transcript= youtube.get_chapter_transcript(chapters,id)
@@ -137,7 +136,7 @@ async def fetch_chapter_summary(id: str, session=Depends(get_db)):
     except Exception as e:
         return JSONResponse(
             status_code=500,
-            content={"data": chapters, "msg": str(e), "success": False}
+            content={"data": None, "msg": str(e), "success": False}
         )
     # Stream summaries
     return StreamingResponse(

@@ -2,7 +2,10 @@ import requests
 from app.helpers import youtube
 from app.core.config import app_config
 from youtube_transcript_api import YouTubeTranscriptApi
+from youtube_transcript_api.proxies import WebshareProxyConfig
+from supadata import Supadata, SupadataError
 
+supadata = Supadata(api_key=app_config.SUPDATA_KEY)
 def get_chapters(video_id):
     try:
         url = f'https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id={video_id}&key={app_config.YOUTUBE_API_KEY}'
@@ -30,7 +33,22 @@ def get_chapters(video_id):
         return (response.status_code,None)
 
 
-
+def get_supadata_transcript(video_id,lan=['en'],is_raw=False):
+    try:
+        text_transcript = supadata.youtube.transcript(
+            video_id=video_id,
+        )
+        response=[]
+        for block in  text_transcript.content:
+                content={
+                    "text":block.text,
+                    "start":int(block.offset)// 1000,
+                }
+                obj = type('ObjFromDict', (object,), content)
+                response.append(obj())
+        return response
+    except Exception:
+        raise 
 
 def get_youtube_transcript(video_id,lan=['en'],is_raw=False):
     try:
@@ -42,11 +60,10 @@ def get_youtube_transcript(video_id,lan=['en'],is_raw=False):
         response=""
         for block in transcript:
             response+=block.text.replace("\n", " ")
-        print(len(response))
         return response
     except Exception as e:
         print(f"[ERROR] failed to get_youtube_transcript..",e)
-        return None
+        return get_supadata_transcript(video_id,lan,is_raw)
 
 def get_chapter_transcript(chapters, video_id, ln=["en"]):
     transcript = get_youtube_transcript(video_id, ln, is_raw=True)
