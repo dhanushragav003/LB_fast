@@ -16,7 +16,7 @@ def convert_to_utc(hour: int, minute: int, time_zone: str):
 def build_cron_expression(time_str, frequency, time_zone=None):
     parts = time_str.split(":")
     hour = parts[0]
-    minute = parts[1]-1
+    minute = parts[1]
     if time_zone:
         hour , minute  = convert_to_utc(hour,minute,time_zone)
     if frequency == "everyday":
