@@ -18,7 +18,7 @@ def build_cron_expression(time_str, frequency, time_zone=None):
     hour = parts[0]
     minute = parts[1]
     if time_zone:
-        hour , minute  = convert_to_utc(hour,minute,time_zone)
+        hour , minute  = convert_to_utc(int(hour),int(minute),time_zone)
     if frequency == "everyday":
         cron = f"{minute} {hour} * * *"
     elif frequency == "everyweekday":
