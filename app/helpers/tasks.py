@@ -1,4 +1,4 @@
-def build_cron_expression(time_str, frequency, tz=None):
+def build_cron_expression(time_str, frequency, time_zone=None):
     # time_str format: "HH:MM" or "HH:MM:SS"
     parts = time_str.split(":")
     
@@ -14,7 +14,6 @@ def build_cron_expression(time_str, frequency, tz=None):
     else:
         raise ValueError("Unsupported frequency")
 
-    # Optional timezone prefix for QStash
-    if tz:
-        cron = f"CRON_TZ={tz} {cron}"
+    if time_zone:
+        cron = f"CRON_TZ={time_zone} {cron}"
     return cron

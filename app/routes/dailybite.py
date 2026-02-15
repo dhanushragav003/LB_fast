@@ -30,7 +30,7 @@ async def create_dailybite(request:DailyBiteRequest,current_user=Depends(get_cur
             db.update_trancripts(db_session,transcript)
         scheduler=qstash.schedule_task()
         request.payload['user_id']=current_user.id
-        cron_exp=tasks.build_cron_expression(request.time,request.frequency)
+        cron_exp=tasks.build_cron_expression(request.time,request.frequency,request.time_zone)
         job_id=scheduler.create_schedule({"payload":request.payload},request.destination,cron_exp,schedule_id=job_id)
         #update progress
         db.update_dailybite(db_session,progress.get('user_learning_progress_id',None),{"job_id":job_id,'daily_bite_enabled':True})
