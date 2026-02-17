@@ -51,5 +51,5 @@ def get_or_create(db:db_session,email,name,picture,auth_provider,create=True):
         "profile_bg":picture,
         "auth_provider":auth_provider,
     }
-    user = db.upsert_record(User,payload,conflict_columns=['username'])
+    user = db.upsert_record(User,payload,conflict_columns=['username'],to_commit=True)
     return user
