@@ -41,7 +41,7 @@ def send_email(
     try:
         resend.api_key = app_config.RESEND_API_KEY
         r = resend.Emails.send({
-        "from": "LearnBite <learnbite@resend.dev>",
+        "from": "LearnBite <noreply@learnbite.site>",
         "to": to,
         "subject": subject,
         "html": html
