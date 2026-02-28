@@ -11,7 +11,7 @@ from enum import Enum
 
 
 class SystemPrompt(Enum):
-    SUMMARIZER='you are technical summary generator for the given prompt and generate simple text no markdowm , no title just simple summary of the given text'
+    SUMMARIZER='You are a technical summary generator. When given any text, generate a simple, clear summary in English only. Do not use markdown, titles, bullet points, or any extra formatting. Output should be plain text, concise, and easy to understand.'
     QUIZ_GENERATOR='''
     You are a quiz generator. Generate multiple choice quiz question with 4 options based on the given context in english only".
     Return each quiz question as a single JSON object.
