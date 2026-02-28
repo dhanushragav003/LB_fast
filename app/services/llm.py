@@ -55,7 +55,7 @@ def generate_quiz(chapter_text,context,total_question):
 
 
 ai_client=ai.ollama("gpt-oss:120b")
-async def generate_text(systemprompt: ai.SystemPrompt,userprompt: str,temperature) -> str:
+async def generate_text(systemprompt: ai.SystemPrompt,userprompt: str,temperature=0.7) -> str:
     loop = asyncio.get_running_loop()
     return await loop.run_in_executor(
         None,
