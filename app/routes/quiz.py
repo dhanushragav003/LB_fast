@@ -74,7 +74,7 @@ async def quiz_generator(text:str,context:str,size:int,ch_id=None,session=Depend
         llm.sse_generate_quiz(
             text,
             context,
-            1,
+            size or 3,
             chapter_transcript=chapter.get("transcript",None) if chapter else None
         ),
         media_type="text/event-stream"
