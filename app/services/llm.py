@@ -96,12 +96,13 @@ def generate_quiz_user_prompt(context,chapter_text,previous_questions_text=None)
     """
     return user_prompt
 
-async def sse_generate_quiz(chapter_text, context, total_questions):
+async def sse_generate_quiz(chapter_text, context, total_questions,chapter_transcript):
     try:
-        print(chapter_text, context, total_questions)
+        print(chapter_text, chapter_transcript, total_questions)
         previous_questions_text=""
+        
         for i in range(total_questions):
-            user_prompt = generate_quiz_user_prompt(context,chapter_text,previous_questions_text=previous_questions_text)
+            user_prompt = generate_quiz_user_prompt(chapter_transcript,chapter_text,previous_questions_text=previous_questions_text)
             print(user_prompt)
             quiz = await generate_text(
                 ai.SystemPrompt.QUIZ_GENERATOR,

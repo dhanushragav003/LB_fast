@@ -14,7 +14,7 @@ route=APIRouter(
     tags=['auth']
 )
 
-@route.get("/me")
+@route.get("/me/")
 def me(request:Request,db=Depends(get_db)):
     token = request.cookies.get("session_token",None)
     if token is None:

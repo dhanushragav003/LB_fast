@@ -27,14 +27,23 @@ def get_context(id:str="",current_user=Depends(get_optinal_current_user),session
                     "title":title,
                     "chapters":chapters
                 }
+                if chapters and not(chapters[0].get('transcript',None)):
+                    print('no transcript found in db')
+                    transcript= youtube.get_chapter_transcript(chapters,id)
+                    update = db.update_trancripts(db_session,transcript,commit=False)
             else:
                 user_id=current_user.id
                 title,ulp= db.ensure_user_progress(db_session,user_id,id)
+                chapters=db_session.get_chapters_with_progress(ulp["id"],id)
                 response={
                     "title":title,
-                    "chapters":db_session.get_chapters_with_progress(ulp["id"],id),
+                    "chapters":chapters,
                     "success":True
                 }
+                if chapters and not(chapters[0].get('transcript',None)):
+                    print('no transcript found in db')
+                    transcript= youtube.get_chapter_transcript(chapters,id)
+                    update = db.update_trancripts(db_session,transcript,commit=False)
         return JSONResponse(status_code=200,content=jsonable_encoder(response))
     except Exception as e:
         print(e)
@@ -57,13 +66,16 @@ def quiz_generator(QuizRequest: QuizRequest):
         return JSONResponse(status_code=500,content={"error": str(e)})
     
 @route.get("/sse/genquiz")
-async def quiz_generator(text:str,context:str,size:int):
+async def quiz_generator(text:str,context:str,size:int,ch_id=None,session=Depends(get_db)):
     print("sse quiz called")
+    db_session= db.db_session(session)
+    chapter=db.fetch_chapter_transcript(db_session,ch_id)
     return StreamingResponse(
         llm.sse_generate_quiz(
             text,
             context,
-            size or 3
+            1,
+            chapter_transcript=chapter.get("transcript",None) if chapter else None
         ),
         media_type="text/event-stream"
     )

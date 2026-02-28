@@ -374,11 +374,11 @@ def fetch_resource_chapters(db_session:db_session,resource_id):
     chapters=db_session.get_record(LearningResourceChapter,filters,order_col='index',order_fn=asc,first_only=False)
     return chapters
 
-def update_trancripts(db_session:db_session,chapters):
+def update_trancripts(db_session:db_session,chapters,commit=True):
     try:
         for chapter in chapters:
             print(chapter['id'],len(chapter["transcript"]))
-            db_session.update_by_id(LearningResourceChapter,chapter['id'], {"transcript": chapter["transcript"]},commit=True)
+            db_session.update_by_id(LearningResourceChapter,chapter['id'], {"transcript": chapter["transcript"]},commit=commit)
         return True
     except Exception:
         raise
@@ -401,6 +401,17 @@ def fetch_progress(db_session: db_session,ulp_id:int):
             "id":ulp_id
         }
         resource=db_session.get_record(UserLearningProgress,filters,first_only=True)
+        return resource
+    except Exception:
+        raise
+
+def fetch_chapter_transcript(db_session: db_session,c_id):
+    try:
+        filters={
+            "id":c_id
+        }
+        print(f"fetching record for {c_id}")
+        resource=db_session.get_record(LearningResourceChapter,filters,first_only=True)
         return resource
     except Exception:
         raise
