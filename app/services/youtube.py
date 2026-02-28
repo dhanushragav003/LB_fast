@@ -2,14 +2,14 @@ import requests
 from app.helpers import youtube
 from app.core.config import app_config
 from youtube_transcript_api import YouTubeTranscriptApi
-from youtube_transcript_api.proxies import WebshareProxyConfig
-from supadata import Supadata, SupadataError
+from supadata import Supadata
 
 supadata = Supadata(api_key=app_config.SUPDATA_KEY)
 def get_chapters(video_id):
     try:
         url = f'https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id={video_id}&key={app_config.YOUTUBE_API_KEY}'
         response = requests.get(url)
+        print(f"{response.json() = }")
         if response.status_code == 200:
             data = response.json()
             video_duration = data.get('items',[{}])[0].get('contentDetails',{}).get('duration',"")

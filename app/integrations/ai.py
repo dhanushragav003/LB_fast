@@ -89,11 +89,12 @@ class ollama():
             api_key="e9739b1968c7475abe7757c2637c3343.9u0wzYAooPG4wknJLs0t2oA0"
         )
 
-    def chat_completion(self,service_type:SystemPrompt,prompt:str):
+    def chat_completion(self,service_type:SystemPrompt,prompt:str,temperature=0.7):
         system_content=service_type.value
         response=self.client.chat.completions.create(
             model=self.model,
-            messages=[{"role":"system","content":system_content},{"role":"user","content":prompt}]
+            messages=[{"role":"system","content":system_content},{"role":"user","content":prompt}],
+            temperature=temperature
           )
         return response.choices[0].message.content
     def stream_response(self,service_type:SystemPrompt,prompt:str):

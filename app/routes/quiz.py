@@ -58,11 +58,12 @@ def quiz_generator(QuizRequest: QuizRequest):
     
 @route.get("/sse/genquiz")
 async def quiz_generator(text:str,context:str,size:int):
+    print("sse quiz called")
     return StreamingResponse(
         llm.sse_generate_quiz(
             text,
             context,
-            size or 1
+            size or 3
         ),
         media_type="text/event-stream"
     )

@@ -55,11 +55,11 @@ def generate_quiz(chapter_text,context,total_question):
 
 
 ai_client=ai.ollama("gpt-oss:120b")
-async def generate_text(systemprompt: ai.SystemPrompt,userprompt: str) -> str:
+async def generate_text(systemprompt: ai.SystemPrompt,userprompt: str,temperature) -> str:
     loop = asyncio.get_running_loop()
     return await loop.run_in_executor(
         None,
-        lambda: ai_client.chat_completion(systemprompt, userprompt)
+        lambda: ai_client.chat_completion(systemprompt, userprompt,temperature=temperature)
     )
     
 async def summary_generator(text: str) -> str:
@@ -71,11 +71,12 @@ async def summary_generator(text: str) -> str:
         return ""
     return await generate_text(ai.SystemPrompt.SUMMARIZER,text)
     
-
-async def sse_generate_quiz(chapter_text, context, total_questions):
+def generate_quiz_user_prompt(context,chapter_text,previous_questions_text=None):
     user_prompt = f"""
         Generate ONE multiple-choice question based on the following text.
-
+        Do **not** repeat any of the previously covered topic listed below.
+        Previously covered topic:
+        {previous_questions_text if previous_questions_text else "this is first question in quiz generation"}
         Context: {context}
 
         Text:
@@ -93,18 +94,26 @@ async def sse_generate_quiz(chapter_text, context, total_questions):
           "answer": "a"
         }}
     """
+    return user_prompt
 
+async def sse_generate_quiz(chapter_text, context, total_questions):
     try:
+        print(chapter_text, context, total_questions)
+        previous_questions_text=""
         for i in range(total_questions):
+            user_prompt = generate_quiz_user_prompt(context,chapter_text,previous_questions_text=previous_questions_text)
+            print(user_prompt)
             quiz = await generate_text(
                 ai.SystemPrompt.QUIZ_GENERATOR,
-                user_prompt
+                user_prompt,
+                temperature=0.75
             )
+            quiz_json=json.loads(quiz)
             payload = {
               "index": i,
-              "quiz": json.loads(quiz)
+              "quiz": quiz_json
             }
-            print(payload)
+            previous_questions_text+=f"- {quiz_json.get('question','')} \n"
             yield f"data: {json.dumps(payload)}\n\n"
 
     except asyncio.CancelledError:
