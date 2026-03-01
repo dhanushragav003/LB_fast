@@ -86,7 +86,7 @@ class ollama():
         self.model=model
         self.client=OpenAI(
             base_url="https://ollama.com/v1",
-            api_key="e9739b1968c7475abe7757c2637c3343.9u0wzYAooPG4wknJLs0t2oA0"
+            api_key=app_config.OLLAMA_API_KEY
         )
 
     def chat_completion(self,service_type:SystemPrompt,prompt:str,temperature=0.7):
